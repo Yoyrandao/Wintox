@@ -20,7 +20,7 @@ namespace Wintox.Lib.LowLevelProcessing
 			_excludedProcesses = excludedProcesses.Excluded;
 		}
 
-		public List<OpenedWindow> GetOpenedWindows()
+		public IEnumerable<OpenedWindow> GetOpenedWindows()
 		{
 			var openedWindows = new List<OpenedWindow>();
 

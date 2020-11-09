@@ -7,7 +7,7 @@ namespace Wintox.Lib.LowLevelProcessing
 {
 	public interface ILowLevelProcessor
 	{
-		List<OpenedWindow> GetOpenedWindows();
+		IEnumerable<OpenedWindow> GetOpenedWindows();
 
 		void SetTopMode(OpenedWindow window, WindowTopMode mode);
 

@@ -1,8 +1,11 @@
 ﻿#nullable enable
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 
 using Wintox.Helpers;
+using Wintox.Lib.Constants;
 using Wintox.Lib.LowLevelProcessing;
 using Wintox.Lib.Models;
 
@@ -15,10 +18,12 @@ namespace Wintox
 			_processor = processor;
 			_converter = converter;
 
+			_windowsCache = _processor.GetOpenedWindows().ToList();
+
 			_trayIcon = new NotifyIcon
 			{
 				Icon             = Resources.MainIcon.ToIcon(),
-				ContextMenuStrip = new ContextMenuStrip(),
+				ContextMenuStrip = MakeMenu(),
 				Visible          = true
 			};
 
@@ -35,27 +40,39 @@ namespace Wintox
 		private void TrayClickCallback(object? sender, EventArgs e)
 		{
 			var trayApp = (sender as NotifyIcon)!;
-			var windows = _processor.GetOpenedWindows();
-
-			trayApp.ContextMenuStrip.Items.Clear();
+			_windowsCache = _processor.GetOpenedWindows().ToList();
 
 			// TODO: Memoization
-			foreach (var window in windows)
-			{
-				trayApp.ContextMenuStrip.Items.Add(_converter.Convert(window, ItemClickCallback));
-			}
+			trayApp.ContextMenuStrip = MakeMenu();
 		}
 
 		private void ItemClickCallback(object? sender, EventArgs e)
 		{
 			var menuItem = (sender as ToolStripMenuItem)!;
+			
+			//bad
+			var selected = _windowsCache.Single(x => x.Title.Equals(menuItem.Text, StringComparison.OrdinalIgnoreCase));
+			var index    = _windowsCache.IndexOf(selected);
+			
+			_processor.SetTopMode(selected, selected.IsOnTop ? WindowTopMode.NoTopMost : WindowTopMode.TopMost);
 
-			//TODO: set top mode by index
-
-			menuItem.Image = menuItem.Image == null
-				                 ? Resources.CheckIcon.ToImage()
-				                 : null;
+			_windowsCache[index].IsOnTop         = !selected.IsOnTop;
+			(sender as ToolStripMenuItem)!.Image = selected.IsOnTop ? Resources.CheckIcon.ToImage() : null;
 		}
+
+		private ContextMenuStrip MakeMenu()
+		{
+			var menu = new ContextMenuStrip();
+
+			foreach (var window in _windowsCache)
+			{
+				menu.Items.Add(_converter.Convert(window, ItemClickCallback));
+			}
+
+			return menu;
+		}
+
+		private List<OpenedWindow> _windowsCache;
 
 		private readonly NotifyIcon                                  _trayIcon;
 		private readonly ILowLevelProcessor                          _processor;

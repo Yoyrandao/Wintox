@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 
 using NonInvasiveKeyboardHookLibrary;
@@ -17,14 +18,9 @@ namespace WinFormsApp1
 		{
 			InitializeComponent();
 
-			_processor = new LowLevelProcessor(new ExcludingSettings(null)
+			_processor = new LowLevelProcessor(new ExcludingSettings()
 			{
-				Excluded =
-				{
-					"Program Manager",
-					"TextInputHost.exe",
-					"ApplicationFrameHost.exe"
-				}
+				Excluded = {}
 			});
 
 			_manager = new KeyboardHookManager();
@@ -35,7 +31,7 @@ namespace WinFormsApp1
 		{
 			listBox1.Items.Clear();
 
-			_windows = _processor.GetOpenedWindows();
+			_windows = _processor.GetOpenedWindows().ToList();
 
 			_windows.ForEach(x => listBox1.Items.Add(x.ExecutablePath + "   " + x.Title));
 		}
