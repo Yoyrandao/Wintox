@@ -19,7 +19,7 @@ jobs:
           dotnet-version: 3.1.202
 
       - name: Install deps
-        run: dotnet restore
+        run: dotnet restore src/Wintox.sln
 
       - name: Build
         run: dotnet build --no-restore
