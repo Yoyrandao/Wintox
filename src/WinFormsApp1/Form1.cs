@@ -4,6 +4,7 @@ using System.Windows.Forms;
 
 using NonInvasiveKeyboardHookLibrary;
 
+using Wintox.Common;
 using Wintox.Lib.Constants;
 using Wintox.Lib.LowLevelProcessing;
 using Wintox.Lib.Models;
@@ -16,11 +17,14 @@ namespace WinFormsApp1
 		{
 			InitializeComponent();
 
-			_processor = new LowLevelProcessor(new List<string>
+			_processor = new LowLevelProcessor(new ExcludingSettings(null)
 			{
-				"Program Manager",
-				"TextInputHost.exe",
-				"ApplicationFrameHost.exe"
+				Excluded =
+				{
+					"Program Manager",
+					"TextInputHost.exe",
+					"ApplicationFrameHost.exe"
+				}
 			});
 
 			_manager = new KeyboardHookManager();
@@ -49,7 +53,15 @@ namespace WinFormsApp1
 		private void button4_Click(object sender, EventArgs e)
 		{
 			_manager.RegisterHotkey(new[] {NonInvasiveKeyboardHookLibrary.ModifierKeys.Alt}, 0x51,
-			                        () => { MessageBox.Show("A:SKDjKLASHJDKLASJdl"); });
+			                        () =>
+			                        {
+				                        listBox1.Items.Clear();
+				                        var active = _processor.GetActive();
+				                        
+				                        listBox1.Items.Add(active.Title);
+				                        
+				                        MessageBox.Show("asdasd");
+			                        });
 		}
 
 		private          List<OpenedWindow>  _windows;

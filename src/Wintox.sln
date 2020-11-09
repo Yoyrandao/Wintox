@@ -4,6 +4,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wintox.Lib", "Wintox.Lib\Wi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinFormsApp1", "WinFormsApp1\WinFormsApp1.csproj", "{B8563CF2-0753-4534-8CEA-633A4DB7434A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wintox", "Wintox\Wintox.csproj", "{328F1F9B-0E37-4C66-BF8F-071AEC03D998}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wintox.Common", "Wintox.Common\Wintox.Common.csproj", "{40A9375D-26D1-4E04-BEE0-6F421AD2029F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +22,13 @@ Global
 		{B8563CF2-0753-4534-8CEA-633A4DB7434A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B8563CF2-0753-4534-8CEA-633A4DB7434A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B8563CF2-0753-4534-8CEA-633A4DB7434A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{328F1F9B-0E37-4C66-BF8F-071AEC03D998}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{328F1F9B-0E37-4C66-BF8F-071AEC03D998}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{328F1F9B-0E37-4C66-BF8F-071AEC03D998}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{328F1F9B-0E37-4C66-BF8F-071AEC03D998}.Release|Any CPU.Build.0 = Release|Any CPU
+		{40A9375D-26D1-4E04-BEE0-6F421AD2029F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{40A9375D-26D1-4E04-BEE0-6F421AD2029F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{40A9375D-26D1-4E04-BEE0-6F421AD2029F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{40A9375D-26D1-4E04-BEE0-6F421AD2029F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

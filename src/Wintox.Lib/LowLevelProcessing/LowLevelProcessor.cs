@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
+using Wintox.Common;
 using Wintox.Lib.Constants;
 using Wintox.Lib.Models;
 
@@ -13,13 +13,13 @@ namespace Wintox.Lib.LowLevelProcessing
 
 	public delegate bool EnumerateWindowsFunc(IntPtr hWnd, IntPtr lParam);
 
-	public class LowLevelProcessor
+	public class LowLevelProcessor : ILowLevelProcessor
 	{
-		public LowLevelProcessor(List<string> excludedProcesses)
+		public LowLevelProcessor(ExcludingSettings excludedProcesses)
 		{
-			_excludedProcesses = excludedProcesses;
+			_excludedProcesses = excludedProcesses.Excluded;
 		}
-		
+
 		public List<OpenedWindow> GetOpenedWindows()
 		{
 			var openedWindows = new List<OpenedWindow>();
@@ -31,7 +31,7 @@ namespace Wintox.Lib.LowLevelProcessing
 
 				var title = buffer.ToString();
 
-				if (!LowLevel.IsWindowVisible(hwnd) || string.IsNullOrEmpty(title))
+				if (!LowLevel.IsWindowVisible(hwnd) || string.IsNullOrEmpty(title) || hwnd == (IntPtr) 0x0)
 				{
 					return true;
 				}
@@ -55,7 +55,7 @@ namespace Wintox.Lib.LowLevelProcessing
 			});
 
 			LowLevel.EnumDesktopWindows(IntPtr.Zero, filter, IntPtr.Zero);
-			
+
 			return openedWindows;
 		}
 
@@ -63,6 +63,22 @@ namespace Wintox.Lib.LowLevelProcessing
 		{
 			LowLevel.SetWindowPos(window.Hwnd, (IntPtr) mode, 0, 0, 0, 0,
 			                      (uint) (WindowPositionParameters.NoMove | WindowPositionParameters.NoSize));
+		}
+
+		public OpenedWindow GetActive()
+		{
+			var activeHwnd = LowLevel.GetForegroundWindow();
+			var buffer     = new StringBuilder(255);
+
+			LowLevel.GetWindowText(activeHwnd, buffer, buffer.Capacity + 1);
+
+			var title = buffer.ToString();
+
+			return new OpenedWindow
+			{
+				Hwnd  = activeHwnd,
+				Title = title == "" ? "EMPTY" : title
+			};
 		}
 
 		private readonly List<string> _excludedProcesses;

@@ -9,5 +9,7 @@ namespace Wintox.Lib.Models
 		public string Title { get; set; }
 		
 		public string ExecutablePath { get; set; }
+		
+		public bool IsOnTop { get; set; }
 	}
 }

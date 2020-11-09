@@ -84,5 +84,13 @@ namespace Wintox.Lib.LowLevelProcessing
 			[In]  int           dwFlags,
 			[Out] StringBuilder lpExeName,
 			ref   int           lpdwSize);
+		
+		
+		[DllImport(
+			LibraryType.USER,
+			EntryPoint   = "GetForegroundWindow",
+			CharSet      = CharSet.Auto,
+			SetLastError = true)]
+		public static extern IntPtr GetForegroundWindow();
 	}
 }
