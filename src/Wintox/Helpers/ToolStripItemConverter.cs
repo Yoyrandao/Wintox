@@ -11,11 +11,9 @@ namespace Wintox.Helpers
 	{
 		public ToolStripMenuItem Convert(OpenedWindow @object, EventHandler callback)
 		{
-			using var imageStream = new MemoryStream(Resources.CheckIcon);
 			var item = new ToolStripMenuItem
 			{
-				Text  = @object.Title,
-				Image = @object.IsOnTop ? Image.FromStream(imageStream) : null
+				Text  = @object.Title
 			};
 
 			item.Click += callback;

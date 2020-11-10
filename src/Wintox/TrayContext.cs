@@ -1,6 +1,7 @@
 ﻿#nullable enable
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -18,7 +19,7 @@ namespace Wintox
 			_processor = processor;
 			_converter = converter;
 
-			_windowsCache = _processor.GetOpenedWindows().ToList();
+			_windowsCache = new SortedSet<OpenedWindow>(_processor.GetOpenedWindows(), new OpenedWindowComparer());
 
 			_trayIcon = new NotifyIcon
 			{
@@ -39,25 +40,29 @@ namespace Wintox
 
 		private void TrayClickCallback(object? sender, EventArgs e)
 		{
-			var trayApp = (sender as NotifyIcon)!;
-			_windowsCache = _processor.GetOpenedWindows().ToList();
+			foreach (var window in _processor.GetOpenedWindows())
+			{
+				_windowsCache.Add(window);
+			}
 
-			// TODO: Memoization
-			trayApp.ContextMenuStrip = MakeMenu();
+			UpdateMenu();
 		}
 
 		private void ItemClickCallback(object? sender, EventArgs e)
 		{
 			var menuItem = (sender as ToolStripMenuItem)!;
-			
+
 			//bad
 			var selected = _windowsCache.Single(x => x.Title.Equals(menuItem.Text, StringComparison.OrdinalIgnoreCase));
-			var index    = _windowsCache.IndexOf(selected);
-			
+
+			var index = _windowsCache
+			            .Select((value, idx) => new {Window = value, Index = idx})
+			            .Single(x => x.Window.Hwnd == selected.Hwnd).Index;
+
 			_processor.SetTopMode(selected, selected.IsOnTop ? WindowTopMode.NoTopMost : WindowTopMode.TopMost);
 
-			_windowsCache[index].IsOnTop         = !selected.IsOnTop;
-			(sender as ToolStripMenuItem)!.Image = selected.IsOnTop ? Resources.CheckIcon.ToImage() : null;
+			_windowsCache.ElementAt(index).IsOnTop = !selected.IsOnTop;
+			(sender as ToolStripMenuItem)!.Image   = selected.IsOnTop ? Resources.CheckIcon.ToImage() : null;
 		}
 
 		private ContextMenuStrip MakeMenu()
@@ -71,8 +76,26 @@ namespace Wintox
 
 			return menu;
 		}
+		
+		private void UpdateMenu()
+		{
+			var menu = _trayIcon.ContextMenuStrip;
+			
+			foreach (var window in _windowsCache)
+			{
+				for (var i = 0; i < menu.Items.Count; i++)
+				{
+					if (menu.Items[i].Text.Equals(window.Title, StringComparison.OrdinalIgnoreCase))
+					{
+						menu.Items[i].Image = menu.Items[i].Image != null
+							? Image.FromFile("Resources/check.ico")
+							: null;
+					}
+				}
+			}
+		}
 
-		private List<OpenedWindow> _windowsCache;
+		private SortedSet<OpenedWindow> _windowsCache;
 
 		private readonly NotifyIcon                                  _trayIcon;
 		private readonly ILowLevelProcessor                          _processor;
