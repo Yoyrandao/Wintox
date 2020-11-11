@@ -1,7 +1,6 @@
 ﻿#nullable enable
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -20,6 +19,7 @@ namespace Wintox
 			_converter = converter;
 
 			_windowsCache = new SortedSet<OpenedWindow>(_processor.GetOpenedWindows(), new OpenedWindowComparer());
+			_updated      = new Queue<OpenedWindow>();
 
 			_trayIcon = new NotifyIcon
 			{
@@ -31,38 +31,26 @@ namespace Wintox
 			_trayIcon.Click += TrayClickCallback;
 		}
 
-		protected override void ExitThreadCore()
-		{
-			_trayIcon.Visible = false;
-
-			Application.Exit();
-		}
-
 		private void TrayClickCallback(object? sender, EventArgs e)
 		{
 			foreach (var window in _processor.GetOpenedWindows())
 			{
 				_windowsCache.Add(window);
 			}
-
-			UpdateMenu();
 		}
 
 		private void ItemClickCallback(object? sender, EventArgs e)
 		{
 			var menuItem = (sender as ToolStripMenuItem)!;
 
-			//bad
-			var selected = _windowsCache.Single(x => x.Title.Equals(menuItem.Text, StringComparison.OrdinalIgnoreCase));
+			var index        = _trayIcon.ContextMenuStrip.Items.IndexOf(menuItem);
+			var window = _windowsCache.ElementAt(index);
 
-			var index = _windowsCache
-			            .Select((value, idx) => new {Window = value, Index = idx})
-			            .Single(x => x.Window.Hwnd == selected.Hwnd).Index;
+			_processor.SetTopMode(window, window.IsOnTop ? WindowTopMode.NoTopMost : WindowTopMode.TopMost);
+			window.ChangeTopMode();
 
-			_processor.SetTopMode(selected, selected.IsOnTop ? WindowTopMode.NoTopMost : WindowTopMode.TopMost);
-
-			_windowsCache.ElementAt(index).IsOnTop = !selected.IsOnTop;
-			(sender as ToolStripMenuItem)!.Image   = selected.IsOnTop ? Resources.CheckIcon.ToImage() : null;
+			_updated.Enqueue(window);
+			UpdateMenu();
 		}
 
 		private ContextMenuStrip MakeMenu()
@@ -76,26 +64,27 @@ namespace Wintox
 
 			return menu;
 		}
-		
+
 		private void UpdateMenu()
 		{
 			var menu = _trayIcon.ContextMenuStrip;
-			
-			foreach (var window in _windowsCache)
+
+			while (_updated.Any())
 			{
-				for (var i = 0; i < menu.Items.Count; i++)
+				var window = _updated.Dequeue();
+
+				foreach (ToolStripMenuItem? item in menu.Items)
 				{
-					if (menu.Items[i].Text.Equals(window.Title, StringComparison.OrdinalIgnoreCase))
-					{
-						menu.Items[i].Image = menu.Items[i].Image != null
-							? Image.FromFile("Resources/check.ico")
-							: null;
-					}
+					if (!item!.CheckEquality(window.Uid))
+						continue;
+
+					item.ChangeStatusIcon(window.IsOnTop);
 				}
 			}
 		}
 
 		private SortedSet<OpenedWindow> _windowsCache;
+		private Queue<OpenedWindow>     _updated;
 
 		private readonly NotifyIcon                                  _trayIcon;
 		private readonly ILowLevelProcessor                          _processor;

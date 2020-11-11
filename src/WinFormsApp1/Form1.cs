@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using NonInvasiveKeyboardHookLibrary;
 
 using Wintox.Common;
+using Wintox.Common.Hash;
 using Wintox.Lib.Constants;
 using Wintox.Lib.LowLevelProcessing;
 using Wintox.Lib.Models;
@@ -18,7 +19,7 @@ namespace WinFormsApp1
 		{
 			InitializeComponent();
 
-			_processor = new LowLevelProcessor(new ExcludingSettings()
+			_processor = new LowLevelProcessor(new Sha1HashProvider(), new ExcludingSettings()
 			{
 				Excluded = {}
 			});

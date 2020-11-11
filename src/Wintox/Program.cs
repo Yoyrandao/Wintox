@@ -6,6 +6,7 @@ using Autofac;
 using Microsoft.Extensions.Configuration;
 
 using Wintox.Common;
+using Wintox.Common.Hash;
 using Wintox.Helpers;
 using Wintox.Lib.LowLevelProcessing;
 using Wintox.Lib.Models;
@@ -36,9 +37,11 @@ namespace Wintox
 
 			builder.Register(c => config).As<IConfiguration>();
 			builder.RegisterType<ExcludingSettings>();
+			
 			builder.RegisterType<ToolStripItemConverter>().As<IConverter<OpenedWindow, ToolStripMenuItem>>();
+			builder.RegisterType<Sha1HashProvider>().As<IHashProvider>();
 
-			builder.Register(c => new LowLevelProcessor(c.Resolve<ExcludingSettings>())).As<ILowLevelProcessor>();
+			builder.RegisterType<LowLevelProcessor>().As<ILowLevelProcessor>();
 			builder.RegisterType<TrayContext>();
 
 			return builder.Build();

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Drawing;
-using System.IO;
 using System.Windows.Forms;
 
 using Wintox.Lib.Models;
@@ -13,7 +11,8 @@ namespace Wintox.Helpers
 		{
 			var item = new ToolStripMenuItem
 			{
-				Text  = @object.Title
+				Text = @object.Title,
+				Name = @object.Uid
 			};
 
 			item.Click += callback;

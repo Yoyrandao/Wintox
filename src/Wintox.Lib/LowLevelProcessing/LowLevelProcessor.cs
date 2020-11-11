@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 
 using Wintox.Common;
+using Wintox.Common.Hash;
 using Wintox.Lib.Constants;
 using Wintox.Lib.Models;
 
@@ -15,8 +16,11 @@ namespace Wintox.Lib.LowLevelProcessing
 
 	public class LowLevelProcessor : ILowLevelProcessor
 	{
-		public LowLevelProcessor(ExcludingSettings excludedProcesses)
+		private readonly IHashProvider _hashProvider;
+
+		public LowLevelProcessor(IHashProvider hashProvider, ExcludingSettings excludedProcesses)
 		{
+			_hashProvider      = hashProvider;
 			_excludedProcesses = excludedProcesses.Excluded;
 		}
 
@@ -39,6 +43,11 @@ namespace Wintox.Lib.LowLevelProcessing
 				LowLevel.GetWindowThreadProcessId(hwnd, out var processId);
 				var executablePath = LowLevelHelper.GetUwpApplicationName(hwnd, processId);
 
+				if (executablePath == null)
+				{
+					return true;
+				}
+
 				if (_excludedProcesses.Any(x => executablePath.Contains(x) || title.Contains(x)))
 				{
 					return true;
@@ -48,7 +57,8 @@ namespace Wintox.Lib.LowLevelProcessing
 				{
 					Hwnd           = hwnd,
 					Title          = title,
-					ExecutablePath = executablePath
+					ExecutablePath = executablePath,
+					Uid            = _hashProvider.Create(executablePath)
 				});
 
 				return true;

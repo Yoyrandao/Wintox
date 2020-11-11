@@ -10,6 +10,8 @@ namespace Wintox.Lib.Models
 		
 		public string ExecutablePath { get; set; }
 		
+		public string Uid { get; set; }
+		
 		public bool IsOnTop { get; set; }
 	}
 }
