@@ -58,7 +58,7 @@ namespace Wintox.Lib.LowLevelProcessing
 					Hwnd           = hwnd,
 					Title          = title,
 					ExecutablePath = executablePath,
-					Uid            = _hashProvider.Create(executablePath)
+					Uid            = _hashProvider.Create(hwnd.ToString())
 				});
 
 				return true;
