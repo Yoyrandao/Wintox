@@ -14,7 +14,8 @@ namespace Wintox.Helpers
 				Text = @object.Title,
 				Name = @object.Uid
 			};
-
+			
+			item.ChangeStatusIcon(@object.IsOnTop);
 			item.Click += callback;
 
 			return item;

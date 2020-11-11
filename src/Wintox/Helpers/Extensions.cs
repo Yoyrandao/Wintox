@@ -42,6 +42,11 @@ namespace Wintox.Helpers
 			
 			item.Image = @checked ? Image.FromFile("Resources/check.ico") : null; 
 		}
+		
+		public static void ChangeStatusIcon(this ToolStripItem item, bool @checked)
+		{
+			item.Image = @checked ? Image.FromFile("Resources/check.ico") : null; 
+		}
 
 		public static void ChangeTopMode(this OpenedWindow window)
 		{
