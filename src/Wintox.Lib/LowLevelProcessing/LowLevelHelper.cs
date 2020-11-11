@@ -25,14 +25,15 @@ namespace Wintox.Lib.LowLevelProcessing
 			windowInfo = (WindowInfo) Marshal.PtrToStructure(pWindowInfo, typeof(WindowInfo));
 
 			var proc = IntPtr.Zero;
-
-			if (windowInfo != null
-			    && (proc = LowLevel.OpenProcess(
-				        (uint) (ProcessAccess.QueryInformation | ProcessAccess.VirtualMemoryRead),
-				        false,
-				        (int) windowInfo.ChildPid)) == IntPtr.Zero)
+			if (windowInfo != null)
 			{
-				return null;
+				proc = LowLevel.OpenProcess((uint) (ProcessAccess.QueryInformation | ProcessAccess.VirtualMemoryRead),
+				                            false, (int) windowInfo.ChildPid);
+
+				if (proc == IntPtr.Zero)
+				{
+					return null;
+				}
 			}
 
 			var capacity = 2048;
@@ -56,7 +57,6 @@ namespace Wintox.Lib.LowLevelProcessing
 			}
 
 			Marshal.StructureToPtr(info, lParam, true);
-
 			return true;
 		}
 	}

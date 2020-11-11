@@ -56,8 +56,6 @@ namespace WinFormsApp1
 				                        var active = _processor.GetActive();
 				                        
 				                        listBox1.Items.Add(active.Title);
-				                        
-				                        MessageBox.Show("asdasd");
 			                        });
 		}
 

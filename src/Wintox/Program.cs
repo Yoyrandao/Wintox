@@ -5,9 +5,12 @@ using Autofac;
 
 using Microsoft.Extensions.Configuration;
 
+using NonInvasiveKeyboardHookLibrary;
+
 using Wintox.Common;
 using Wintox.Common.Hash;
 using Wintox.Helpers;
+using Wintox.Helpers.Converters;
 using Wintox.Lib.LowLevelProcessing;
 using Wintox.Lib.Models;
 
@@ -21,23 +24,25 @@ namespace Wintox
 			Application.SetHighDpiMode(HighDpiMode.SystemAware);
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
-			
+
 			var container = InitializeContainer();
-			
+
 			Application.Run(container.Resolve<TrayContext>());
 		}
 
 		private static IContainer InitializeContainer()
 		{
 			var builder = new ContainerBuilder();
-			var config  = new ConfigurationBuilder()
-				.AddJsonFile("appsettings.json")
-				.SetBasePath(Environment.CurrentDirectory)
-				.Build();
+
+			var config = new ConfigurationBuilder()
+			             .AddJsonFile("appsettings.json")
+			             .SetBasePath(Environment.CurrentDirectory)
+			             .Build();
 
 			builder.Register(c => config).As<IConfiguration>();
 			builder.RegisterType<ExcludingSettings>();
-			
+
+			builder.Register(_ => new ShortcutManager(new KeyboardHookManager())).As<IShortcutManager>();
 			builder.RegisterType<ToolStripItemConverter>().As<IConverter<OpenedWindow, ToolStripMenuItem>>();
 			builder.RegisterType<Sha1HashProvider>().As<IHashProvider>();
 

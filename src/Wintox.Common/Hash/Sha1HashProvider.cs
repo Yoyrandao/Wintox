@@ -11,8 +11,7 @@ namespace Wintox.Common.Hash
 			using var hashFunc = new SHA1Managed();
 
 			var hash = hashFunc.ComputeHash(Encoding.UTF8.GetBytes(data));
-
-			return string.Join("", hash.Select(x => x.ToString("X2"))).ToLower();
+			return string.Join(string.Empty, hash.Select(x => x.ToString("X2"))).ToLower();
 		}
 	}
 }

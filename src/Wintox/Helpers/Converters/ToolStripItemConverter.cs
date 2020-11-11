@@ -3,7 +3,7 @@ using System.Windows.Forms;
 
 using Wintox.Lib.Models;
 
-namespace Wintox.Helpers
+namespace Wintox.Helpers.Converters
 {
 	public class ToolStripItemConverter : IConverter<OpenedWindow, ToolStripMenuItem>
 	{

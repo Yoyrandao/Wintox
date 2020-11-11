@@ -2,7 +2,7 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wintox.Lib", "Wintox.Lib\Wintox.Lib.csproj", "{29E68AB0-AC6E-449A-BA34-2973E231B490}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinFormsApp1", "WinFormsApp1\WinFormsApp1.csproj", "{B8563CF2-0753-4534-8CEA-633A4DB7434A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DebugTool", "DebugTool\DebugTool.csproj", "{B8563CF2-0753-4534-8CEA-633A4DB7434A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wintox", "Wintox\Wintox.csproj", "{328F1F9B-0E37-4C66-BF8F-071AEC03D998}"
 EndProject

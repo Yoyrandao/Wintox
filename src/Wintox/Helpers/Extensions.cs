@@ -13,7 +13,6 @@ namespace Wintox.Helpers
 		public static Image ToImage(this byte[] data)
 		{
 			using var stream = new MemoryStream(data);
-
 			return Image.FromStream(stream);
 		}
 
@@ -29,7 +28,6 @@ namespace Wintox.Helpers
 			{
 				return false;
 			}
-			
 			return item.Name.Equals(value, StringComparison.OrdinalIgnoreCase);
 		}
 
@@ -39,7 +37,6 @@ namespace Wintox.Helpers
 			{
 				return;
 			}
-			
 			item.Image = @checked ? Image.FromFile("Resources/check.ico") : null; 
 		}
 		

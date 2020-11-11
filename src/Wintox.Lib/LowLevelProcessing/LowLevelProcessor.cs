@@ -65,7 +65,6 @@ namespace Wintox.Lib.LowLevelProcessing
 			});
 
 			LowLevel.EnumDesktopWindows(IntPtr.Zero, filter, IntPtr.Zero);
-
 			return openedWindows;
 		}
 
@@ -78,16 +77,15 @@ namespace Wintox.Lib.LowLevelProcessing
 		public OpenedWindow GetActive()
 		{
 			var activeHwnd = LowLevel.GetForegroundWindow();
-			var buffer     = new StringBuilder(255);
+			var buffer = new StringBuilder(255);
 
 			LowLevel.GetWindowText(activeHwnd, buffer, buffer.Capacity + 1);
 
 			var title = buffer.ToString();
-
 			return new OpenedWindow
 			{
 				Hwnd  = activeHwnd,
-				Title = title == "" ? "EMPTY" : title
+				Title = title == string.Empty ? "EMPTY" : title
 			};
 		}
 
