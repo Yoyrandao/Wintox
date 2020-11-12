@@ -71,12 +71,30 @@ namespace Wintox {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Exit.
+        /// </summary>
+        internal static string Exit {
+            get {
+                return ResourceManager.GetString("Exit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
         internal static byte[] MainIcon {
             get {
                 object obj = ResourceManager.GetObject("MainIcon", resourceCulture);
                 return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Windows.
+        /// </summary>
+        internal static string WindowsGroupText {
+            get {
+                return ResourceManager.GetString("WindowsGroupText", resourceCulture);
             }
         }
     }

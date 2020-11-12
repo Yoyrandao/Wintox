@@ -20,7 +20,7 @@ namespace Wintox.Helpers.MenuManagement
 			_exitClickedHandler = exitClickedHandler;
 
 			_items          = new List<ToolStripItem>();
-			_dropDownButton = new ToolStripDropDownButton("Windows");
+			_dropDownButton = new ToolStripDropDownButton(Resources.WindowsGroupText);
 			_dropDown       = new ToolStripDropDownMenu();
 			_menu           = new ContextMenuStrip();
 		}
@@ -38,7 +38,7 @@ namespace Wintox.Helpers.MenuManagement
 			_dropDownButton.DropDown = _dropDown;
 
 			_menu.Items.Add(_dropDownButton);
-			_menu.Items.Add(new ToolStripButton("Exit", null, _exitClickedHandler));
+			_menu.Items.Add(new ToolStripButton(Resources.Exit, null, _exitClickedHandler));
 
 			return _menu;
 		}

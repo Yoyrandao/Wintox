@@ -65,4 +65,10 @@
     <data name="MainIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
         <value>Resources\icon.ico;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
     </data>
+    <data name="Exit" xml:space="preserve">
+        <value>Exit</value>
+    </data>
+    <data name="WindowsGroupText" xml:space="preserve">
+        <value>Windows</value>
+    </data>
 </root>
