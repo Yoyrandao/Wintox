@@ -3,11 +3,15 @@ using System.Linq;
 
 using Microsoft.Extensions.Configuration;
 
-namespace Wintox.Common
+namespace Wintox.Common.Settings
 {
 	public class ExcludingSettings
 	{
-		public ExcludingSettings(IConfiguration configuration) => _configuration = configuration;
+		public ExcludingSettings(IConfiguration configuration)
+		{
+			_configuration = configuration;
+		}
+		
 		public ExcludingSettings() { }
 
 		public List<string> Excluded => _configuration?

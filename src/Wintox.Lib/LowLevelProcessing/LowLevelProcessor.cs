@@ -5,6 +5,7 @@ using System.Text;
 
 using Wintox.Common;
 using Wintox.Common.Hash;
+using Wintox.Common.Settings;
 using Wintox.Lib.Constants;
 using Wintox.Lib.Models;
 

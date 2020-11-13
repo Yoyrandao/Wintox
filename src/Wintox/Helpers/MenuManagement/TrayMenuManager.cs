@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Windows.Forms;
 
+using Serilog;
+
 using Wintox.Helpers.Converters;
 using Wintox.Lib.Models;
 

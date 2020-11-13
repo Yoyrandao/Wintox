@@ -7,8 +7,10 @@ using Microsoft.Extensions.Configuration;
 
 using NonInvasiveKeyboardHookLibrary;
 
-using Wintox.Common;
+using Serilog;
+
 using Wintox.Common.Hash;
+using Wintox.Common.Settings;
 using Wintox.Helpers;
 using Wintox.Helpers.Converters;
 using Wintox.Lib.LowLevelProcessing;
@@ -21,25 +23,19 @@ namespace Wintox
 		[STAThread]
 		private static void Main()
 		{
-			Application.SetHighDpiMode(HighDpiMode.SystemAware);
-			Application.EnableVisualStyles();
-			Application.SetCompatibleTextRenderingDefault(false);
-
-			var container = InitializeContainer();
-
-			Application.Run(container.Resolve<TrayContext>());
+			Application.Run(InitializeContainer().Resolve<TrayContext>());
 		}
 
 		private static IContainer InitializeContainer()
 		{
 			var builder = new ContainerBuilder();
 
-			var config = new ConfigurationBuilder()
-			             .AddJsonFile("appsettings.json")
-			             .SetBasePath(Environment.CurrentDirectory)
-			             .Build();
+			_configuration = new ConfigurationBuilder()
+			                 .AddJsonFile("appsettings.json")
+			                 .SetBasePath(Environment.CurrentDirectory)
+			                 .Build();
 
-			builder.Register(c => config).As<IConfiguration>();
+			builder.Register(c => _configuration).As<IConfiguration>();
 			builder.RegisterType<ExcludingSettings>();
 
 			builder.Register(_ => new ShortcutManager(new KeyboardHookManager())).As<IShortcutManager>();
@@ -48,8 +44,19 @@ namespace Wintox
 
 			builder.RegisterType<LowLevelProcessor>().As<ILowLevelProcessor>();
 			builder.RegisterType<TrayContext>();
+			
+			InitializeLogger();
 
 			return builder.Build();
 		}
+
+		private static void InitializeLogger()
+		{
+			Log.Logger = new LoggerConfiguration()
+				.ReadFrom.Configuration(_configuration, "Serilog")
+				.CreateLogger();
+		}
+
+		private static IConfiguration _configuration;
 	}
 }

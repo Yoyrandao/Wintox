@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 
+using Serilog;
+
 using Wintox.Helpers;
 using Wintox.Helpers.Converters;
 using Wintox.Helpers.MenuManagement;
@@ -39,6 +41,8 @@ namespace Wintox
 
 		private void TrayClickCallback(object? sender, EventArgs e)
 		{
+			_logger.Information("Gettings opened windows.");
+			
 			foreach (var window in _processor.GetOpenedWindows())
 			{
 				_windowsCache.Add(window);
@@ -48,10 +52,14 @@ namespace Wintox
 
 		private void ItemClickCallback(object? sender, EventArgs e)
 		{
+			_logger.Information("Panel clicked.");
+			
 			var menuItem = (sender as ToolStripItem)!;
 
 			var index = _trayManager.ChangeStateOf(menuItem, menuItem.Image != null);
 			var window = _windowsCache.ElementAt(index);
+			
+			_logger.Information($"Changing state of \"{window.Title}\" (HWND: {window.Hwnd}) window to {!window.IsOnTop}");
 
 			_processor.SetTopMode(window, window.IsOnTop ? WindowTopMode.NoTopMost : WindowTopMode.TopMost);
 			window.ChangeTopMode();
@@ -61,8 +69,12 @@ namespace Wintox
 
 		private void FiredShortcutCallback()
 		{
+			_logger.Information("Shortcut clicked.");
+			
 			var active = _processor.GetActive();
 			var window = _windowsCache.Single(x => x.Hwnd == active.Hwnd);
+			
+			_logger.Information($"Changing state of \"{window.Title}\" (HWND: {window.Hwnd}) window to {!window.IsOnTop}");
 			
 			_processor.SetTopMode(window, window.IsOnTop ? WindowTopMode.NoTopMost : WindowTopMode.TopMost);
 			window.ChangeTopMode();
@@ -72,6 +84,8 @@ namespace Wintox
 
 		private void ExitCallback(object? sender, EventArgs e)
 		{
+			_logger.Information("Application shutdown.");
+			
 			_trayIcon.ContextMenuStrip.Items.Clear();
 			_trayIcon.Visible = false;
 
@@ -84,5 +98,7 @@ namespace Wintox
 		private readonly ITrayMenuManager   _trayManager;
 
 		private readonly NotifyIcon _trayIcon;
+
+		private readonly ILogger _logger = Log.ForContext<TrayContext>();
 	}
 }
