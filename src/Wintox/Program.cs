@@ -30,8 +30,12 @@ namespace Wintox
 		{
 			var builder = new ContainerBuilder();
 
+			var config = Environment.GetEnvironmentVariable("IS_DEVELOP") == null
+				             ? "appsettings.json"
+				             : "appsettings.Development.json";
+
 			_configuration = new ConfigurationBuilder()
-			                 .AddJsonFile("appsettings.json")
+			                 .AddJsonFile(config)
 			                 .SetBasePath(Environment.CurrentDirectory)
 			                 .Build();
 
