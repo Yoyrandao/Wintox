@@ -21,9 +21,13 @@ namespace Wintox
 		public TrayContext(
 			ILowLevelProcessor                          processor,
 			IShortcutManager                            shortcutManager,
+			IExceptionShield                            shield,
 			IConverter<OpenedWindow, ToolStripMenuItem> converter)
 		{
-			_processor       = processor;
+			_processor = processor;
+			_shield    = shield;
+			
+			_shield.SetLogger(_logger);
 
 			_windowsCache = new SortedSet<OpenedWindow>(_processor.GetOpenedWindows(), new OpenedWindowComparer());
 			_trayManager  = new TrayMenuManager(converter, ItemClickCallback, ExitCallback);
@@ -41,60 +45,76 @@ namespace Wintox
 
 		private void TrayClickCallback(object? sender, EventArgs e)
 		{
-			_logger.Information("Gettings opened windows.");
-			
-			foreach (var window in _processor.GetOpenedWindows())
+			_shield.Protect(() =>
 			{
-				_windowsCache.Add(window);
-			}
-			_trayManager.Update(_windowsCache);
+				_logger.Information("Gettings opened windows.");
+
+				foreach (var window in _processor.GetOpenedWindows())
+				{
+					_windowsCache.Add(window);
+				}
+
+				_trayManager.Update(_windowsCache);
+			});
 		}
 
 		private void ItemClickCallback(object? sender, EventArgs e)
 		{
-			_logger.Information("Panel clicked.");
-			
-			var menuItem = (sender as ToolStripItem)!;
+			_shield.Protect(() =>
+			{
+				_logger.Information("Panel clicked.");
 
-			var index = _trayManager.ChangeStateOf(menuItem, menuItem.Image != null);
-			var window = _windowsCache.ElementAt(index);
-			
-			_logger.Information($"Changing state of \"{window.Title}\" (HWND: {window.Hwnd}) window to {!window.IsOnTop}");
+				var menuItem = (sender as ToolStripItem)!;
 
-			_processor.SetTopMode(window, window.IsOnTop ? WindowTopMode.NoTopMost : WindowTopMode.TopMost);
-			window.ChangeTopMode();
+				var index  = _trayManager.ChangeStateOf(menuItem, menuItem.Image != null);
+				var window = _windowsCache.ElementAt(index);
 
-			_trayManager.Update(_windowsCache);
+				_logger.Information(
+					$"Changing state of \"{window.Title}\" (HWND: {window.Hwnd}) window to {!window.IsOnTop}");
+
+				_processor.SetTopMode(window, window.IsOnTop ? WindowTopMode.NoTopMost : WindowTopMode.TopMost);
+				window.ChangeTopMode();
+
+				_trayManager.Update(_windowsCache);
+			});
 		}
 
 		private void FiredShortcutCallback()
 		{
-			_logger.Information("Shortcut clicked.");
-			
-			var active = _processor.GetActive();
-			var window = _windowsCache.Single(x => x.Hwnd == active.Hwnd);
-			
-			_logger.Information($"Changing state of \"{window.Title}\" (HWND: {window.Hwnd}) window to {!window.IsOnTop}");
-			
-			_processor.SetTopMode(window, window.IsOnTop ? WindowTopMode.NoTopMost : WindowTopMode.TopMost);
-			window.ChangeTopMode();
-			
-			_trayManager.Update(_windowsCache);
+			_shield.Protect(() =>
+			{
+				_logger.Information("Shortcut clicked.");
+
+				var active = _processor.GetActive();
+				var window = _windowsCache.Single(x => x.Hwnd == active.Hwnd);
+
+				_logger.Information(
+					$"Changing state of \"{window.Title}\" (HWND: {window.Hwnd}) window to {!window.IsOnTop}");
+
+				_processor.SetTopMode(window, window.IsOnTop ? WindowTopMode.NoTopMost : WindowTopMode.TopMost);
+				window.ChangeTopMode();
+
+				_trayManager.Update(_windowsCache);
+			});
 		}
 
 		private void ExitCallback(object? sender, EventArgs e)
 		{
-			_logger.Information("Application shutdown.");
-			
-			_trayIcon.ContextMenuStrip.Items.Clear();
-			_trayIcon.Visible = false;
+			_shield.Protect(() =>
+			{
+				_logger.Information("Application shutdown.");
 
-			Application.Exit();
+				_trayIcon.ContextMenuStrip.Items.Clear();
+				_trayIcon.Visible = false;
+
+				Application.Exit();
+			});
 		}
 
-		private SortedSet<OpenedWindow> _windowsCache;
+		private volatile SortedSet<OpenedWindow> _windowsCache;
 
 		private readonly ILowLevelProcessor _processor;
+		private readonly IExceptionShield   _shield;
 		private readonly ITrayMenuManager   _trayManager;
 
 		private readonly NotifyIcon _trayIcon;

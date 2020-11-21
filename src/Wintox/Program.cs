@@ -41,6 +41,7 @@ namespace Wintox
 			builder.Register(_ => new ShortcutManager(new KeyboardHookManager())).As<IShortcutManager>();
 			builder.RegisterType<ToolStripItemConverter>().As<IConverter<OpenedWindow, ToolStripMenuItem>>();
 			builder.RegisterType<Sha1HashProvider>().As<IHashProvider>();
+			builder.RegisterType<ExceptionShield>().As<IExceptionShield>();
 
 			builder.RegisterType<LowLevelProcessor>().As<ILowLevelProcessor>();
 			builder.RegisterType<TrayContext>();
