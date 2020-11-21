@@ -4,6 +4,9 @@
         <OutputType>WinExe</OutputType>
         <TargetFramework>netcoreapp3.1</TargetFramework>
         <UseWindowsForms>true</UseWindowsForms>
+        <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+        <Company>Yoyrandao</Company>
+        <AssemblyVersion>0.0.1</AssemblyVersion>
     </PropertyGroup>
 
     <ItemGroup>
