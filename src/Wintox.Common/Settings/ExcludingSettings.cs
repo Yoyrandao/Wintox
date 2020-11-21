@@ -15,6 +15,7 @@ namespace Wintox.Common.Settings
 		public ExcludingSettings() { }
 
 		public List<string> Excluded => _configuration?
+		                                .GetSection("Excluded")
 		                                .AsEnumerable()
 		                                .Select(x => x.Value)
 		                                .Where(x => x != null)
