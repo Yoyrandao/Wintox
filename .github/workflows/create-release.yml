@@ -7,6 +7,10 @@ on:
         description: Release version
         default: '0.0.1'
         required: true
+      branch:
+        description: Release branch
+        default: 'Type it'
+        required: true
 
 jobs:
   build:
@@ -15,6 +19,8 @@ jobs:
 
    steps:
     - uses: actions/checkout@v2
+      with:
+        ref: github.event.inputs.branch
       
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
