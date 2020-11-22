@@ -22,6 +22,7 @@ namespace Wintox
 			ILowLevelProcessor                          processor,
 			IShortcutManager                            shortcutManager,
 			IExceptionShield                            shield,
+			OptionsContext                              optionsContext,
 			IConverter<OpenedWindow, ToolStripMenuItem> converter)
 		{
 			_processor = processor;
@@ -30,7 +31,7 @@ namespace Wintox
 			_shield.SetLogger(_logger);
 
 			_windowsCache = new SortedSet<OpenedWindow>(_processor.GetOpenedWindows(), new OpenedWindowComparer());
-			_trayManager  = new TrayMenuManager(converter, ItemClickCallback, ExitCallback);
+			_trayManager  = new TrayMenuManager(converter, ItemClickCallback, ExitCallback, optionsContext);
 
 			_trayIcon = new NotifyIcon
 			{

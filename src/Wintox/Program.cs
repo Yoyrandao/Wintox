@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using Autofac;
@@ -49,6 +50,8 @@ namespace Wintox
 
 			builder.RegisterType<LowLevelProcessor>().As<ILowLevelProcessor>();
 			builder.RegisterType<TrayContext>();
+
+			builder.RegisterInstance(new OptionsContext { Visible = false });
 			
 			InitializeLogger();
 

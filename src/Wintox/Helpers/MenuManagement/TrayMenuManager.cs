@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Windows.Forms;
 
-using Serilog;
-
 using Wintox.Helpers.Converters;
 using Wintox.Lib.Models;
 
@@ -14,12 +12,14 @@ namespace Wintox.Helpers.MenuManagement
 		public TrayMenuManager(
 			IConverter<OpenedWindow, ToolStripMenuItem> converter,
 			EventHandler                                itemClickedHandler,
-			EventHandler                                exitClickedHandler)
+			EventHandler                                exitClickedHandler,
+			OptionsContext                              optionsContext)
 		{
 			_converter = converter;
 
 			_itemClickedHandler = itemClickedHandler;
 			_exitClickedHandler = exitClickedHandler;
+			_optionsContext     = optionsContext;
 
 			_items          = new List<ToolStripItem>();
 			_dropDownButton = new ToolStripDropDownButton(Resources.WindowsGroupText);
@@ -40,6 +40,9 @@ namespace Wintox.Helpers.MenuManagement
 			_dropDownButton.DropDown = _dropDown;
 
 			_menu.Items.Add(_dropDownButton);
+			_menu.Items.Add(new ToolStripButton("Test", null,
+			                                    (s, e) => { _optionsContext.Visible = !_optionsContext.Visible; }));
+			
 			_menu.Items.Add(new ToolStripButton(Resources.Exit, null, _exitClickedHandler));
 
 			return _menu;
@@ -81,5 +84,7 @@ namespace Wintox.Helpers.MenuManagement
 
 		private readonly EventHandler _itemClickedHandler;
 		private readonly EventHandler _exitClickedHandler;
+
+		private readonly OptionsContext _optionsContext;
 	}
 }
