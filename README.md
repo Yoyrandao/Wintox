@@ -6,7 +6,7 @@
   </a>
 </p>
 
-> Just a thing that can lift windows up (like Task Manager )Just a thing that can lift windows up
+> Just a thing that can lift windows up (like Task Manager). Just a thing that can lift windows up
 
 ## Author
 
