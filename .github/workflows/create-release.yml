@@ -1,0 +1,34 @@
+name: .NET Core
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Release version
+        default: '0.0.1'
+        required: true
+
+jobs:
+  build:
+
+   runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v2
+      
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.202
+          
+    - name: Install dependencies
+      run: dotnet restore src/Wintox.sln
+      
+    - name: Build
+      run: dotnet build --configuration Release --no-restore src/Wintox.sln
+      
+    - name: Test
+      run: dotnet test --no-restore --verbosity normal src/Wintox.sln
+  
+    - name: Publish
+      run: dotnet publish -r win-x64 ./src/Wintox/Wintox.csproj
