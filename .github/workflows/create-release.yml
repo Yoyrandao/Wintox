@@ -9,11 +9,11 @@ on:
         required: true
       branch:
         description: Release branch
-        default: 'Type it'
+        default: 'main'
         required: true
 
 jobs:
-  build:
+  create-release:
 
    runs-on: windows-latest
 
@@ -21,11 +21,6 @@ jobs:
     - uses: actions/checkout@v2
       with:
         ref: ${{ github.event.inputs.branch }}
-      
-    - name: Setup .NET Core
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 3.1.202
           
     - name: Install dependencies
       run: dotnet restore src/Wintox.sln
@@ -42,14 +37,50 @@ jobs:
     - name: Publish framework-depend
       run: dotnet publish --self-contained false -r win-x64 -o ./src/Wintox/bin/publish/framework-depend/ ./src/Wintox/Wintox.csproj
     
-    - name: 'Publish Artifacts #1'
-      uses: actions/upload-artifact@v2
-      with:
-        name: "Wintox Release v${{ github.event.inputs.version }} (.NET Core non required)"
-        path: ./src/Wintox/bin/publish/self-contained/
+    - name: Clear self-contained build
+      run: ./deploy/clean.ps1 -basePath ./src/Wintox/bin/publish/self-contained/
+      shell: powershell
+      
+    - name: Clear framework-depend build
+      run: ./deploy/clean.ps1 -basePath ./src/Wintox/bin/publish/framework-depend/
+      shell: powershell
+      
+    - name: Zip self-contained artifact
+      run: ./deploy/create-distributive.ps1 -buildPath ./src/Wintox/bin/publish/self-contained/ -outputPath . -name "self-contained"
+      shell: powershell
+    
+    - name: Zip framework-depend artifact
+      run: ./deploy/create-distributive.ps1 -buildPath ./src/Wintox/bin/publish/framework-depend/ -outputPath . -name "framework-depend"
         
-    - name: 'Publish Artifacts #2'
-      uses: actions/upload-artifact@v2
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN:  ${{ secrets.GITHUB_TOKEN }}
       with:
-        name: "Wintox Release v${{ github.event.inputs.version }}"
-        path: ./src/Wintox/bin/publish/framework-depend/ 
+        tag_name: "v${{ github.event.inputs.version }}"
+        release_name: "Release v${{ github.event.inputs.version }}"
+        body: ${{ github.event.head_commit.message }}
+        draft: false
+        prerelease: false
+        
+    - name: Upload self-contained release asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: "./self-contained.zip"
+        asset_name: "Wintox v${{ github.event.inputs.version }} (.NET Core non required)" 
+        asset_content_type: application/zip 
+        
+    - name: Upload framework-depend release asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: "./framework-depend.zip"
+        asset_name: "Wintox v${{ github.event.inputs.version }}" 
+        asset_content_type: application/zip   
+      
