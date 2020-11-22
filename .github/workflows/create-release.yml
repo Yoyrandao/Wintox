@@ -38,3 +38,9 @@ jobs:
   
     - name: Publish
       run: dotnet publish -r win-x64 ./src/Wintox/Wintox.csproj
+    
+    - name: Publish Artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: "Wintox Release v${{ github.event.inputs.version }}"
+        path: ./src/Wintox/bin/Debug/netcoreapp3.1/win-x64/publish/
