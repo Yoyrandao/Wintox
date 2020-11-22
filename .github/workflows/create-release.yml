@@ -20,7 +20,7 @@ jobs:
    steps:
     - uses: actions/checkout@v2
       with:
-        ref: github.event.inputs.branch
+        ref: ${{ github.event.inputs.branch }}
       
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
@@ -36,5 +36,20 @@ jobs:
     - name: Test
       run: dotnet test --no-restore --verbosity normal src/Wintox.sln
   
-    - name: Publish
-      run: dotnet publish -r win-x64 ./src/Wintox/Wintox.csproj
+    - name: Publish self-contained
+      run: dotnet publish -r win-x64 -o ./src/Wintox/bin/publish/self-contained/ ./src/Wintox/Wintox.csproj
+    
+    - name: Publish framework-depend
+      run: dotnet publish --self-contained false -r win-x64 -o ./src/Wintox/bin/publish/framework-depend/ ./src/Wintox/Wintox.csproj
+    
+    - name: 'Publish Artifacts #1'
+      uses: actions/upload-artifact@v2
+      with:
+        name: "Wintox Release v${{ github.event.inputs.version }} (.NET Core non required)"
+        path: ./src/Wintox/bin/publish/self-contained/
+        
+    - name: 'Publish Artifacts #2'
+      uses: actions/upload-artifact@v2
+      with:
+        name: "Wintox Release v${{ github.event.inputs.version }}"
+        path: ./src/Wintox/bin/publish/framework-depend/ 
