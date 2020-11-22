@@ -6,7 +6,7 @@
         <UseWindowsForms>true</UseWindowsForms>
         <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
         <Company>Yoyrandao</Company>
-        <AssemblyVersion>0.0.1</AssemblyVersion>
+        <AssemblyVersion>0.0.11</AssemblyVersion>
     </PropertyGroup>
 
     <ItemGroup>
