@@ -46,11 +46,11 @@ jobs:
       shell: powershell
       
     - name: Zip self-contained artifact
-      run: ./deploy/create-distributive.ps1 -buildPath ../src/Wintox/bin/publish/self-contained/ -outputPath ../build/ -name "self-contained"
+      run: ./deploy/create-distributive.ps1 -buildPath ./src/Wintox/bin/publish/self-contained/ -outputPath ../build/ -name "self-contained"
       shell: powershell
     
     - name: Zip framework-depend artifact
-      run: ./deploy/create-distributive.ps1 -buildPath ../src/Wintox/bin/publish/framework-depend/ -outputPath ../build/ -name "framework-depend"
+      run: ./deploy/create-distributive.ps1 -buildPath ./src/Wintox/bin/publish/framework-depend/ -outputPath ../build/ -name "framework-depend"
         
     - name: Create Release
       id: create_release
