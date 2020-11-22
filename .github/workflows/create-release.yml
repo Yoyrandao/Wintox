@@ -45,7 +45,7 @@ jobs:
     - name: 'Publish Artifacts #1'
       uses: actions/upload-artifact@v2
       with:
-        name: "Wintox Release v${{ github.event.inputs.version }}"
+        name: "Wintox Release v${{ github.event.inputs.version }} (.NET Core non required)"
         path: ./src/Wintox/bin/publish/self-contained/
         
     - name: 'Publish Artifacts #2'
