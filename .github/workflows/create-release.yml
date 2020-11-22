@@ -46,11 +46,11 @@ jobs:
       shell: powershell
       
     - name: Zip self-contained artifact
-      run: ./deploy/create-distributive.ps1 -buildPath ./src/Wintox/bin/publish/self-contained/ -outputPath ../build/ -name "self-contained"
+      run: ./deploy/create-distributive.ps1 -buildPath ./src/Wintox/bin/publish/self-contained/ -outputPath . -name "self-contained"
       shell: powershell
     
     - name: Zip framework-depend artifact
-      run: ./deploy/create-distributive.ps1 -buildPath ./src/Wintox/bin/publish/framework-depend/ -outputPath ../build/ -name "framework-depend"
+      run: ./deploy/create-distributive.ps1 -buildPath ./src/Wintox/bin/publish/framework-depend/ -outputPath . -name "framework-depend"
         
     - name: Create Release
       id: create_release
@@ -70,7 +70,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: "./build/self-contained.zip"
+        asset_path: "./self-contained.zip"
         asset_name: "Wintox Release v${{ github.event.inputs.version }} (.NET Core non required)" 
         asset_content_type: application/zip 
         
@@ -80,7 +80,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: "./build/framework-depend.zip"
+        asset_path: "./framework-depend.zip"
         asset_name: "Wintox Release v${{ github.event.inputs.version }}" 
         asset_content_type: application/zip   
       
