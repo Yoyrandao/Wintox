@@ -97,5 +97,14 @@ namespace Wintox {
                 return ResourceManager.GetString("WindowsGroupText", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Wintox.
+        /// </summary>
+        internal static string WintoxToolTip {
+            get {
+                return ResourceManager.GetString("WintoxToolTip", resourceCulture);
+            }
+        }
     }
 }

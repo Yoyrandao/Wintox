@@ -71,4 +71,7 @@
     <data name="WindowsGroupText" xml:space="preserve">
         <value>Windows</value>
     </data>
+    <data name="WintoxToolTip" xml:space="preserve">
+        <value>Wintox</value>
+    </data>
 </root>

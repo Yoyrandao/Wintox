@@ -26,7 +26,7 @@ namespace Wintox
 		{
 			_processor = processor;
 			_shield    = shield;
-			
+
 			_shield.SetLogger(_logger);
 
 			_windowsCache = new SortedSet<OpenedWindow>(_processor.GetOpenedWindows(), new OpenedWindowComparer());
@@ -36,7 +36,8 @@ namespace Wintox
 			{
 				Icon             = Resources.MainIcon.ToIcon(),
 				ContextMenuStrip = _trayManager.Init(_windowsCache),
-				Visible          = true
+				Visible          = true,
+				Text             = Resources.WintoxToolTip
 			};
 
 			_trayIcon.Click += TrayClickCallback;
