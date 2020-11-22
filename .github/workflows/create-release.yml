@@ -38,11 +38,11 @@ jobs:
       run: dotnet publish --self-contained false -r win-x64 -o ./src/Wintox/bin/publish/framework-depend/ ./src/Wintox/Wintox.csproj
     
     - name: Clear self-contained build
-      run: ./deploy/clean.ps1 -basePath ../src/Wintox/bin/publish/self-contained/
+      run: ./deploy/clean.ps1 -basePath ./src/Wintox/bin/publish/self-contained/
       shell: powershell
       
     - name: Clear framework-depend build
-      run: ./deploy/clean.ps1 -basePath ../src/Wintox/bin/publish/framework-depend/
+      run: ./deploy/clean.ps1 -basePath ./src/Wintox/bin/publish/framework-depend/
       shell: powershell
       
     - name: Zip self-contained artifact
