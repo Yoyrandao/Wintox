@@ -9,7 +9,7 @@ on:
         required: true
       branch:
         description: Release branch
-        default: 'Type it'
+        default: 'main'
         required: true
 
 jobs:
@@ -71,7 +71,7 @@ jobs:
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: "./self-contained.zip"
-        asset_name: "Wintox Release v${{ github.event.inputs.version }} (.NET Core non required)" 
+        asset_name: "Wintox v${{ github.event.inputs.version }} (.NET Core non required)" 
         asset_content_type: application/zip 
         
     - name: Upload framework-depend release asset
@@ -81,6 +81,6 @@ jobs:
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: "./framework-depend.zip"
-        asset_name: "Wintox Release v${{ github.event.inputs.version }}" 
+        asset_name: "Wintox v${{ github.event.inputs.version }}" 
         asset_content_type: application/zip   
       
