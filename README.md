@@ -9,7 +9,7 @@
 ![Regular Build](https://github.com/Yoyrandao/Wintox/workflows/Stage%20Build/badge.svg)
 ![Release Build](https://github.com/Yoyrandao/Wintox/workflows/Release/badge.svg)
 
-> Just a thing that can lift windows up (like Task Manager). Just a thing that can lift windows up
+> Just a thing that can lift windows up (like Task Manager)
 
 ## Author
 
